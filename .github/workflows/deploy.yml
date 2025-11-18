@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.VPS_KEY }}        # private key SSH
           port: 22
           script: |
-           cd ~/proyek-cloud
-           git pull
-           docker compose down
-           docker compose up -d --build
+            cd ~/proyek-cloud
+            git pull
+            docker compose down
+            docker compose up -d --build
