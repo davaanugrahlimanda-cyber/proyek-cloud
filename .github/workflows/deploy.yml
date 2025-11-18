@@ -12,17 +12,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy ke VPS via SSH
-        uses: appleboy/ssh-action@v1      # <- ganti dari @v1.0.0 ke @v1
+      # Load private key ke ssh-agent
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
-          passphrase: ""                  # kalau waktu buat key PASS-PHRASE-nya dikosongkan
-          port: 22
-          debug: true                     # supaya log-nya lebih jelas
-          script: |
+          ssh-private-key: ${{ secrets.VPS_KEY }}
+
+      # Tambahkan host ke known_hosts supaya ssh tidak nanya konfirmasi
+      - name: Add VPS to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 22 ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      # Deploy ke VPS via SSH biasa
+      - name: Deploy ke VPS via SSH
+        run: |
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd ~/proyek-cloud
             git pull
             docker compose down
             docker compose up -d --build
+          EOF
