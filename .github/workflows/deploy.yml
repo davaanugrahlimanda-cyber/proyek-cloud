@@ -19,7 +19,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}  # user SSH VPS (misal: bnsp19)
           key: ${{ secrets.VPS_KEY }}        # private key SSH
           port: 22
-          script: |
+          script:  |
             cd ~/proyek-cloud
             git pull
             docker compose down
