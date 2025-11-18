@@ -5,7 +5,7 @@ services:
     build: ./app
     container_name: app
     ports:
-      - "3000:3000"
+      - "3000:3000"        # akses aplikasi: http://IP_VPS:3000
     restart: always
 
   prometheus:
@@ -14,12 +14,19 @@ services:
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - "9090:9090"
+      - "9090:9090"        # akses prometheus: http://IP_VPS:9090
+    restart: always
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports:
+      - "9100:9100"        # endpoint metrics
     restart: always
 
   grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
-      - "3001:3000"
+      - "4000:3000"        # akses grafana: http://IP_VPS:4000
     restart: always
